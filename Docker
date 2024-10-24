@@ -1,0 +1,21 @@
+sudo vi docker.sh
+--------------------------------------------------------------------
+#!/bin/bash
+
+# Update the package list
+sudo apt-get update -y
+
+# Install Docker
+sudo apt-get install docker.io -y
+
+# Add the current user to the Docker group
+sudo usermod -aG docker $USER
+
+# Change permissions for the Docker socket (optional but allows current user access without sudo)
+sudo chmod 777 /var/run/docker.sock
+
+# Verify Docker is running by listing containers (if any)
+docker ps
+-----------------------------------------------------------------------
+chmod 777 docker.sh
+./docker.sh
