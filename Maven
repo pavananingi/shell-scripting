@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Update package list
+echo "Updating package list..."
+sudo apt update -y
+
+# Install Java (required for Maven)
+echo "Installing Java..."
+sudo apt install -y openjdk-11-jdk
+
+# Set Maven version
+MAVEN_VERSION=3.8.8
+MAVEN_URL=https://downloads.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+
+# Download Maven
+echo "Downloading Maven $MAVEN_VERSION..."
+wget $MAVEN_URL -P /tmp
+
+# Extract Maven
+echo "Extracting Maven..."
+sudo tar xf /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz -C /opt
+
+# Create symbolic link for easier version updates
+sudo ln -s /opt/apache-maven-$MAVEN_VERSION /opt/maven
+
+# Set up environment variables
+echo "Configuring environment variables..."
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' | sudo tee -a /etc/profile.d/maven.sh
+echo 'export M2_HOME=/opt/maven' | sudo tee -a /etc/profile.d/maven.sh
+echo 'export MAVEN_HOME=/opt/maven' | sudo tee -a /etc/profile.d/maven.sh
+echo 'export PATH=$M2_HOME/bin:$PATH' | sudo tee -a /etc/profile.d/maven.sh
+
+# Load environment variables
+source /etc/profile.d/maven.sh
+
+# Verify Maven installation
+echo "Maven version:"
+mvn -version
